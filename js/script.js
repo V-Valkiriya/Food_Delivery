@@ -151,12 +151,13 @@ window.addEventListener('DOMContentLoaded', () => {
     // use classes for cards
 
     class MenuCard {
-        constructor(src, alt, title, descr, price, parentSelector) {
+        constructor(src, alt, title, descr, price, parentSelector, ...classes) {
             this.src = src;
             this.alt = alt;
             this.title = title;
             this.descr = descr;
             this.price = price;
+            this.classes = classes;
             this.parent = document.querySelector(parentSelector);
             this.transfer = 0.89;
             this.changeToEUR();
@@ -169,8 +170,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
         render() {
             const element = document.createElement('div');
+            if (this.classes.length === 0) {
+                this.element = 'menu__item';
+                element.classList.add(this.element);
+            } else {
+                this.classes.forEach(className => element.classList.add(className));
+            }
             element.innerHTML = `
-            <div class="menu__item">
                     <img src=${this.src} alt=${this.alt}>
                     <h3 class="menu__item-subtitle">${this.title}</h3>
                     <div class="menu__item-descr">${this.descr}</div>
@@ -179,7 +185,6 @@ window.addEventListener('DOMContentLoaded', () => {
                         <div class="menu__item-cost">Price:</div>
                         <div class="menu__item-total"><span>${this.price}</span> €/day</div>
                     </div>
-                </div>
             `;
             this.parent.append(element);
         }
@@ -191,7 +196,7 @@ window.addEventListener('DOMContentLoaded', () => {
         '"Fitness" menu',
         '"Fitness" menu is a new approach to cooking: more fresh vegetables and fruits. Product of active and healthy people. This is a brand new product with the best price and high quality!',
         33.7,
-        '.menu .container'
+        '.menu .container',
     ).render();
 
     new MenuCard(
@@ -200,7 +205,8 @@ window.addEventListener('DOMContentLoaded', () => {
         '“Premium” menu',
         '"Premium" menu - we use not only beautiful packaging design, but also high-quality execution of dishes. Red fish, seafood, fruits - a restaurant menu without going to a restaurant!',
         56,
-        '.menu .container'
+        '.menu .container',
+        "menu__item"
     ).render();
 
     new MenuCard(
@@ -209,7 +215,8 @@ window.addEventListener('DOMContentLoaded', () => {
         '"Vegan" menu',
         'The "Vegan" menu is a careful selection of ingredients: the complete absence of animal products, milk from almonds, the right amount of protein from tofu and the best vegetarian steaks.',
         44,
-        '.menu .container'
+        '.menu .container',
+        "menu__item"
     ).render();
 
 
