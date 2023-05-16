@@ -1,19 +1,17 @@
-window.addEventListener("DOMContentLoaded", function() {
 
-
+window.addEventListener("DOMContentLoaded", function () {
   // Tabs
   const tabs = document.querySelectorAll(".tabheader__item"),
     tabsContent = document.querySelectorAll(".tabcontent"),
     tabsParent = document.querySelector(".tabheader__items");
 
   function hideTabContent() {
-
-    tabsContent.forEach(item => {
+    tabsContent.forEach((item) => {
       item.classList.add("hide");
       item.classList.remove("show", "fade");
     });
 
-    tabs.forEach(item => {
+    tabs.forEach((item) => {
       item.classList.remove("tabheader__item_active");
     });
   }
@@ -105,15 +103,15 @@ window.addEventListener("DOMContentLoaded", function() {
   const modalTrigger = document.querySelectorAll("[data-modal]"),
     modal = document.querySelector(".modal");
 
-    modalTrigger.forEach((btn) => {
-        btn.addEventListener("click", openModal);
-      });
+  modalTrigger.forEach((btn) => {
+    btn.addEventListener("click", openModal);
+  });
 
   function closeModal() {
-        modal.classList.add("hide");
-        modal.classList.remove("show");
-        document.body.style.overflow = "";
-      }
+    modal.classList.add("hide");
+    modal.classList.remove("show");
+    document.body.style.overflow = "";
+  }
 
   function openModal() {
     modal.classList.add("show");
@@ -189,34 +187,43 @@ window.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  new MenuCard(
-    "img/tabs/vegy.jpg",
-    "vegy",
-    '"Fitness" menu',
-    '"Fitness" menu is a new approach to cooking: more fresh vegetables and fruits. Product of active and healthy people. This is a brand new product with the best price and high quality!',
-    33.7,
-    ".menu .container"
-  ).render();
+  const getResource = async (url) => {
+    const res = await fetch(url);
 
-  new MenuCard(
-    "img/tabs/elite.jpg",
-    "elite",
-    "“Premium” menu",
-    '"Premium" menu - we use not only beautiful packaging design, but also high-quality execution of dishes. Red fish, seafood, fruits - a restaurant menu without going to a restaurant!',
-    56,
-    ".menu .container",
-    "menu__item"
-  ).render();
+    if(!res.ok) {
+      throw new Error (`Couldn't fetch ${url}, status: ${url.status}`);
+    }
+    return await res.json();
+  }
 
-  new MenuCard(
-    "img/tabs/post.jpg",
-    "post",
-    '"Vegan" menu',
-    'The "Vegan" menu is a careful selection of ingredients: the complete absence of animal products, milk from almonds, the right amount of protein from tofu and the best vegetarian steaks.',
-    44,
-    ".menu .container",
-    "menu__item"
-  ).render();
+  getResource('http://localhost:3000/menu')
+        .then(data => {
+        data.forEach(({img, altimg, title, descr, price}) => {
+        new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+    });
+  });
+
+  // getResource('http://localhost:3000/menu')
+  //       .then(data => createCard(data));
+
+  // function createCard(data) {
+  //   data.forEach(({img, altimg, title, descr, price}) => {
+  //     const element = document.createElement('div');
+  //     element.classList.add('menu__item');
+  //     element.innerHTML = `
+  //                   <img src=${img} alt=${altimg}>
+  //                   <h3 class="menu__item-subtitle">${title}</h3>
+  //                   <div class="menu__item-descr">${descr}</div>
+  //                   <div class="menu__item-divider"></div>
+  //                   <div class="menu__item-price">
+  //                       <div class="menu__item-cost">Price:</div>
+  //                       <div class="menu__item-total"><span>${price}</span> €/day</div>
+  //                   </div>
+  //     `;
+  //     document.querySelector('.menu .container').append(element);
+  //   });
+      
+
 
   // Post Forms` data
 
@@ -229,10 +236,22 @@ window.addEventListener("DOMContentLoaded", function() {
   };
 
   forms.forEach((item) => {
-    postData(item);
+    bindPostData(item);
   });
 
-  function postData(form) {
+  const postData = async (url, data) => {
+   const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json"
+    },
+    body: data
+   });
+
+   return await res.json();
+  }
+
+  function bindPostData(form) {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
 
@@ -243,33 +262,21 @@ window.addEventListener("DOMContentLoaded", function() {
         display: block;
         margin: 0 auto;
       `;
-      form.insertAdjacentElement('afterend', statusMessage);
+      form.insertAdjacentElement("afterend", statusMessage);
 
-      const request = new XMLHttpRequest();
-      request.open("POST", "server.php");
-
-      request.setRequestHeader("Content-type", "application/json");
       const formData = new FormData(form);
 
-      const object = {};
-      formData.forEach(function (key, value) {
-        object[key] = value;
-      });
+      const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
-      const json = JSON.stringify(object);
-
-      request.send(json);
-
-      request.addEventListener("load", () => {
-        if (request.status === 200) {
-          console.log(request.response);
-          showThanksModal(message.success);
-          statusMessage.remove();
-          form.reset();
-          
-        } else {
-            showThanksModal(message.failure);
-        }
+      postData('http://localhost:3000/requests', json)
+      .then((data) => {
+        console.log(data);
+        showThanksModal(message.success);
+        statusMessage.remove();
+      }).catch(() => {
+        showThanksModal(message.failure);
+      }).finally(() => {
+        form.reset();
       });
     });
   }
@@ -297,4 +304,128 @@ window.addEventListener("DOMContentLoaded", function() {
       prevModalDialog.classList.remove("hide");
     }, 4000);
   }
+
+fetch('http://localhost:3000/menu')
+    .then(data => data.json())
+    .then(res => console.log(res)); 
+
+//Slider
+let offset = 0;
+let slideIndex = 1;
+
+const slides = document.querySelectorAll('.offer__slide'),
+    prev = document.querySelector('.offer__slider-prev'),
+    next = document.querySelector('.offer__slider-next'),
+    total = document.querySelector('#total'),
+    current = document.querySelector('#current'),
+    slidesWrapper = document.querySelector('.offer__slider-wrapper'),
+    width = window.getComputedStyle(slidesWrapper).width,
+    slidesField = document.querySelector('.offer__slider-inner');
+
+if (slides.length < 10) {
+    total.textContent = `0${slides.length}`;
+    current.textContent =  `0${slideIndex}`;
+} else {
+    total.textContent = slides.length;
+    current.textContent =  slideIndex;
+}
+
+slidesField.style.width = 100 * slides.length + '%';
+slidesField.style.display = 'flex';
+slidesField.style.transition = '0.5s all';
+
+slidesWrapper.style.overflow = 'hidden';
+
+slides.forEach(slide => {
+    slide.style.width = width;
 });
+
+next.addEventListener('click', () => {
+    if (offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {
+        offset = 0;
+    } else {
+        offset += +width.slice(0, width.length - 2); 
+    }
+
+    slidesField.style.transform = `translateX(-${offset}px)`;
+
+    if (slideIndex == slides.length) {
+        slideIndex = 1;
+    } else {
+        slideIndex++;
+    }
+
+    if (slides.length < 10) {
+        current.textContent =  `0${slideIndex}`;
+    } else {
+        current.textContent =  slideIndex;
+    }
+});
+
+prev.addEventListener('click', () => {
+    if (offset == 0) {
+        offset = +width.slice(0, width.length - 2) * (slides.length - 1);
+    } else {
+        offset -= +width.slice(0, width.length - 2);
+    }
+
+    slidesField.style.transform = `translateX(-${offset}px)`;
+
+    if (slideIndex == 1) {
+        slideIndex = slides.length;
+    } else {
+        slideIndex--;
+    }
+
+    if (slides.length < 10) {
+        current.textContent =  `0${slideIndex}`;
+    } else {
+        current.textContent =  slideIndex;
+    }
+});
+
+
+
+// showSlides(slideIndex);
+
+// if (slides.length < 10) {
+//   total.textContent = `0${slides.length}`;
+// } else {
+//   total.textContent = slides.length;
+// }
+
+// function showSlides(n) {
+//   if (n > slides.length) {
+//     slideIndex = 1;
+//   } else if (n < 1) {
+//     slideIndex = slides.length;
+//   }
+
+//   slides.forEach(item => item.style.display = 'none');
+
+//   slides[slideIndex - 1].style.display = 'block';
+
+//   if (slides.length < 10) {
+//     current.textContent = `0${slideIndex}`;
+//   } else {
+//     current.textContent = slideIndex;
+//   }
+// };
+
+// function plusSlides(n) {
+//   showSlides(slideIndex += n);
+// }
+//   prev.addEventListener('click', () => {
+//     plusSlides(-1);
+//   });
+
+//   next.addEventListener('click', () => {
+//     plusSlides(1);
+//   });
+
+
+
+
+});
+
+

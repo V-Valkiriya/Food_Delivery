@@ -1,0 +1,47 @@
+{
+  "menu": [
+    {
+      "img": "img/tabs/vegy.jpg",
+      "altimg": "vegy",
+      "title": "'Fitness' menu",
+      "descr": "'Fitness' menu is a new approach to cooking: more fresh vegetables and fruits. For people who are interested in sports, active and healthy. This is a brand new product with the best price and high quality!",
+      "price": 9
+    },
+    {
+      "img": "img/tabs/post.jpg",
+      "altimg": "post",
+      "title": "'Vegan' menu",
+      "descr": "Our special 'Vegan' menu is a careful selection of ingredients: the complete absence of animal products. Complete harmony with yourself and nature in every element! Everything will be 'Om'!",
+      "price": 14
+    },
+    {
+      "img": "img/tabs/elite.jpg",
+      "altimg": "elite",
+      "title": "'Premium' menu",
+      "descr": "'Premium' menu - we use not only beautiful packaging design, but also high-quality execution of dishes. Red fish, seafood, fruits - a restaurant menu without going to a restaurant!",
+      "price": 21
+    }
+  ],
+  "requests": [
+    {
+      "Valeriya": "name",
+      "+31620660432": "phone",
+      "id": 1
+    },
+    {
+      "name": "Наталия/Надежда",
+      "phone": "37467290352",
+      "id": 2
+    },
+    {
+      "name": "Valeriya",
+      "phone": "+31620660432",
+      "id": 3
+    },
+    {
+      "name": "Valeriya",
+      "phone": "+31620660432",
+      "id": 4
+    }
+  ]
+}

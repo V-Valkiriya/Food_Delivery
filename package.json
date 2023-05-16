@@ -1,0 +1,22 @@
+{
+  "name": "food_delivery",
+  "version": "1.0.0",
+  "description": "A site for the completion of ready-made diet.",
+  "main": "test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/V-Valkiriya/Food_Delivery.git"
+  },
+  "author": "Valeriya S.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/V-Valkiriya/Food_Delivery/issues"
+  },
+  "homepage": "https://github.com/V-Valkiriya/Food_Delivery#readme",
+  "devDependencies": {
+    "json-server": "^0.17.3"
+  }
+}
