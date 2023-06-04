@@ -12,12 +12,23 @@
   },
   "author": "Valeriya S.",
   "license": "ISC",
+  "browserslist": [
+    "> 1%"
+  ],
   "bugs": {
     "url": "https://github.com/V-Valkiriya/Food_Delivery/issues"
   },
   "homepage": "https://github.com/V-Valkiriya/Food_Delivery#readme",
   "devDependencies": {
+    "@babel/cli": "^7.21.5",
+    "@babel/core": "^7.22.1",
+    "@babel/preset-env": "^7.22.4",
+    "babel-loader": "^9.1.2",
+    "core-js": "^3.30.2",
     "json-server": "^0.17.3",
     "webpack-cli": "^5.1.1"
+  },
+  "dependencies": {
+    "es6-promise": "^4.2.8"
   }
 }
